@@ -1,5 +1,6 @@
 import type { AppAction } from '../../types';
 import { NAMES_AR, NAMES_FR } from '../../lib/prayerCalc';
+import { storageSet, storageRemove } from '../../lib/storage';
 
 interface Props {
   customJSON: Record<string, unknown> | null;
@@ -21,8 +22,8 @@ export function JSONSection({ customJSON, dispatch, onClose }: Props) {
           : years.length ? `Horaires ${years.join('–')}` : file.name.replace('.json', '');
 
         dispatch({ type: 'SET_CUSTOM_JSON', json: parsed, cityName });
-        localStorage.setItem('customJSON',     e.target?.result as string);
-        localStorage.setItem('customJSONName', file.name);
+        storageSet('customJSON',     e.target?.result as string);
+        storageSet('customJSONName', file.name);
         onClose();
       } catch { alert('JSON invalide — vérifiez le format'); }
     };
@@ -31,8 +32,8 @@ export function JSONSection({ customJSON, dispatch, onClose }: Props) {
 
   function clearJSON() {
     dispatch({ type: 'SET_CUSTOM_JSON', json: null });
-    localStorage.removeItem('customJSON');
-    localStorage.removeItem('customJSONName');
+    storageRemove('customJSON');
+    storageRemove('customJSONName');
   }
 
   // Build status label

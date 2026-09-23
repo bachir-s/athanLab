@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import type { PrayerTimes, SkyState } from '../types';
 import { computeSunHalo } from '../lib/skyEngine';
+import { getHijriDate } from '../lib/hijri';
 import { TopBar } from './TopBar';
 import { SettingsPanel } from './settings/SettingsPanel';
 import type { WeatherData, WeatherConfig, CalculationMethod, Theme } from '../types';
@@ -133,16 +134,8 @@ export function SkySection({
     }
   }, [nowMins, prayers]);
 
-  // Calcul de la date Hégirienne (approximative selon le calendrier local)
-  const hijriDate = new Intl.DateTimeFormat('fr-FR-u-ca-islamic', {
-    day: 'numeric', month: 'long', year: 'numeric'
-  }).format(new Date());
-
-  // Calcul du jour Hégirien pour la phase de la lune (1-30)
-  const hijriDayStr = new Intl.DateTimeFormat('en-u-ca-islamic', {
-    day: 'numeric'
-  }).format(new Date());
-  const hijriDay = parseInt(hijriDayStr, 10) || 15;
+  // Date Hégirienne + jour (1-30) pour la phase de la lune
+  const { label: hijriDate, day: hijriDay } = getHijriDate();
 
   // Génération du chemin SVG pour la phase de la lune
   const getMoonPath = (day: number) => {

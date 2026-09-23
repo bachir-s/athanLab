@@ -2,11 +2,12 @@ import { useReducer, useEffect } from 'react';
 import type { AppState, AppAction, WeatherConfig } from '../types';
 import { computePrayerTimes, parseCustomJSON } from '../lib/prayerCalc';
 import { resolveTheme } from '../lib/themes';
+import { storageGet, storageSet } from '../lib/storage';
 
 // ─── Initial State ────────────────────────────────────────────────
 const getInitialWeatherConfig = (): WeatherConfig => ({
-  service: (localStorage.getItem('weather_service') as WeatherConfig['service']) || 'none',
-  apiKey:  localStorage.getItem('weather_key') || '',
+  service: (storageGet('weather_service') as WeatherConfig['service']) || 'none',
+  apiKey:  storageGet('weather_key') || '',
 });
 
 const INITIAL_STATE: AppState = {
@@ -56,7 +57,7 @@ function reducer(state: AppState, action: AppAction): AppState {
 // ─── Hook ────────────────────────────────────────────────────────
 export function useAppState() {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE, (init) => {
-    const theme = resolveTheme(localStorage.getItem('athanlab-theme'));
+    const theme = resolveTheme(storageGet('athanlab-theme'));
     // Apply theme synchronously before first render to avoid flash
     document.documentElement.setAttribute('data-theme', theme);
     return {
@@ -79,20 +80,20 @@ export function useAppState() {
 
   // Persist weather config
   useEffect(() => {
-    localStorage.setItem('weather_service', state.weatherConfig.service);
-    localStorage.setItem('weather_key', state.weatherConfig.apiKey);
+    storageSet('weather_service', state.weatherConfig.service);
+    storageSet('weather_key', state.weatherConfig.apiKey);
   }, [state.weatherConfig]);
 
   // Apply and persist theme
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', state.theme);
-    localStorage.setItem('athanlab-theme', state.theme);
+    storageSet('athanlab-theme', state.theme);
   }, [state.theme]);
 
   // Restore custom JSON from localStorage on mount
   useEffect(() => {
     try {
-      const saved = localStorage.getItem('customJSON');
+      const saved = storageGet('customJSON');
       if (!saved) return;
       const json = JSON.parse(saved);
       const years = Object.keys(json).filter(k => /^20\d{2}$/.test(k));
