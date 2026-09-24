@@ -1,0 +1,12 @@
+# Scripts d'installation autorisés / ignorés
+# pnpm 10
+onlyBuiltDependencies:
+  - esbuild
+  - sharp
+ignoredBuiltDependencies:
+  - core-js
+# pnpm 11+
+allowBuilds:
+  esbuild: true
+  sharp: true
+  core-js: false
