@@ -262,8 +262,6 @@ html, body, #root {
     radial-gradient(circle, transparent 30%, rgba(255,255,255,0.1) 31%, transparent 32%);
   mask-image: radial-gradient(circle, black 20%, transparent 65%);
   -webkit-mask-image: radial-gradient(circle, black 20%, transparent 65%);
-    repeating-conic-gradient(from 0deg, transparent 0deg 10deg, rgba(255,255,255,0.05) 10deg 20deg),
-    radial-gradient(circle at 50% 50%, transparent 30%, rgba(255,255,255,0.05) 31%, transparent 32%);
   mask-image: radial-gradient(circle, black 0%, transparent 70%);
   -webkit-mask-image: radial-gradient(circle, black 0%, transparent 70%);
   animation: slowSpin 180s linear infinite;
@@ -693,6 +691,12 @@ html, body, #root {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 8px;
+}
+/* Safari < 10.1 (iPad 2) : pas de CSS Grid */
+@supports not (display: grid) {
+  .theme-grid { display: flex; }
+  .theme-grid > * { flex: 1 1 0; }
+  .theme-grid > * + * { margin-left: 8px; }
 }
 
 .theme-btn {
